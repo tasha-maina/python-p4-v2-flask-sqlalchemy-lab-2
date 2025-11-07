@@ -19,10 +19,11 @@ class Customer(db.Model, SerializerMixin):
 
     # Relationship to Review
     reviews = db.relationship('Review', back_populates='customer')
+    
     # Association proxy to get items directly from reviews
     items = association_proxy('reviews', 'item')
 
-    # Serialization rules
+    # Serialization rules to avoid recursion
     serialize_rules = ('-reviews.customer',)
 
     def __repr__(self):
@@ -39,7 +40,7 @@ class Item(db.Model, SerializerMixin):
     # Relationship to Review
     reviews = db.relationship('Review', back_populates='item')
 
-    # Serialization rules
+    # Serialization rules to avoid recursion
     serialize_rules = ('-reviews.item',)
 
     def __repr__(self):
@@ -58,7 +59,7 @@ class Review(db.Model, SerializerMixin):
     customer = db.relationship('Customer', back_populates='reviews')
     item = db.relationship('Item', back_populates='reviews')
 
-    # Serialization rules
+    # Serialization rules to avoid recursion
     serialize_rules = ('-customer.reviews', '-item.reviews')
 
     def __repr__(self):
